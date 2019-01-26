@@ -5,6 +5,7 @@ import ru.tander.bd.connectionManager.ConnectionManagerImp;
 import ru.tander.bd.dao.DaoTest;
 import ru.tander.bd.dao.DaoTestImpl;
 
+
 public class Main {
 
     private static final String USER = "postgres";
@@ -15,8 +16,11 @@ public class Main {
         DaoTest daoTest = new DaoTestImpl(ConnectionManagerImp.getInstance().getConnection(USER, PASSWORD,URL));
         ((DaoTestImpl) daoTest).clearTable();
         ((DaoTestImpl) daoTest).clearTable();
-        System.out.println(((DaoTestImpl) daoTest).countRows());
-        daoTest.addNumbers(1000);
-        System.out.println(((DaoTestImpl) daoTest).countRows());
+        ((DaoTestImpl) daoTest).addNumbersBatch(1000000);
+        long startTime = System.currentTimeMillis();
+        int[] rows = ((DaoTestImpl) daoTest).selectAll();
+        System.out.println(rows.length);
+        System.out.println("Продолжительность работы: " + (System.currentTimeMillis() - startTime));
+        System.out.println("ВСЁ");
     }
 }
