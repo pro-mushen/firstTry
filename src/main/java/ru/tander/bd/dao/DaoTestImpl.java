@@ -51,24 +51,24 @@ public class DaoTestImpl  implements DaoTest{
     }
 
 
-    public int[] selectAll(){
+    public String[] selectAll() {
         final String SELECT_ALL_QUERY = "select * from test";
         try(Statement statement = connection.createStatement(TYPE_SCROLL_INSENSITIVE,CONCUR_READ_ONLY)){
             ResultSet result = statement.executeQuery(SELECT_ALL_QUERY);
             int countRows = getCountRows(result);
             if (countRows>0){
-                int[] records = new int[countRows+1];
+                String[] records = new String[countRows + 1];
                 int numRow = 0;
                 while (result.next()){
                     numRow = numRow + 1;
-                    records[numRow] = result.getInt(1);
+                    records[numRow] = result.getString(1);
                 }
                 return records;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new int[0];
+        return new String[0];
     }
 
     private int getCountRows(ResultSet result) throws SQLException {
