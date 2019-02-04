@@ -40,6 +40,7 @@ public class ConnectionManagerImp implements ConnectionManager {
         if (connection != null){
             try {
                 connection.close();
+
             } catch (SQLException e) {
             }
         }

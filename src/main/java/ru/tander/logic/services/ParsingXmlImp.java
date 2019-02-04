@@ -5,8 +5,11 @@ import ru.tander.bd.dao.DaoTest;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 
 public class ParsingXmlImp implements ParsingXml {
 
@@ -23,7 +26,7 @@ public class ParsingXmlImp implements ParsingXml {
     public int createXmlFile(String[] fields) {
         int counter = 0;
         XMLOutputFactory output = XMLOutputFactory.newInstance();
-        try (FileWriter fileWriter = new FileWriter("C:/test/1.xml")) {
+        try (FileWriter fileWriter = new FileWriter("1.xml")) {
             XMLStreamWriter writer = output.createXMLStreamWriter(fileWriter);
             writer.writeStartDocument("UTF-8", "1.0");
             writer.writeDTD("\n");
@@ -50,6 +53,19 @@ public class ParsingXmlImp implements ParsingXml {
             e.printStackTrace();
         }
         return counter;
+    }
+
+    public void xmlToString(String xmlFile, String xslFile) throws Exception {
+        // Открыть файлы в виде потоков
+        InputStream xml = new FileInputStream(xmlFile);
+        InputStream xsl = new FileInputStream(xslFile);
+        // Сщоздать источник для транформации из потоков
+        StreamSource xmlSource = new StreamSource(xml);
+        StreamSource stylesource = new StreamSource(xsl);
+        // Создать трансформатор и выполнить трансформацию
+        Transformer transformer = TransformerFactory.newInstance().newTransformer(stylesource);
+        transformer.transform(xmlSource, new StreamResult(new File("2.xml")));
+        // вернуть результат в виде строки
     }
 
     private void newRow(int countTab, XMLStreamWriter writer) throws XMLStreamException {

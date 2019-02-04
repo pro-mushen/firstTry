@@ -27,6 +27,11 @@ public class Main {
         startTime = System.currentTimeMillis();
         ParsingXml parsingXml = new ParsingXmlImp();
         parsingXml.createXmlFile(rows);
+        try {
+            ((ParsingXmlImp) parsingXml).xmlToString("1.xml", "test.xsl");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Продолжительность работы парсинг: " + (System.currentTimeMillis() - startTime));
         System.out.println("ВСЁ");
     }
