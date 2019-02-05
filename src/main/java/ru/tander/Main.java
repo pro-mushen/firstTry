@@ -14,7 +14,7 @@ public class Main {
     private static final String URL = "jdbc:postgresql://localhost:5500/test";
 
     public static void main(String[] args) {
-        DaoTest daoTest = new DaoTestImpl(ConnectionManagerImp.getInstance().getConnection(USER, PASSWORD,URL));
+        DaoTest daoTest = new DaoTestImpl(ConnectionManagerImp.getInstance(URL, USER, PASSWORD).getConnection());
         ((DaoTestImpl) daoTest).clearTable();
         ((DaoTestImpl) daoTest).clearTable();
         long startTime = System.currentTimeMillis();

@@ -1,5 +1,7 @@
 package ru.tander.bd.dao;
 
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 
 import static java.sql.ResultSet.CONCUR_READ_ONLY;
@@ -7,6 +9,7 @@ import static java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE;
 
 public class DaoTestImpl  implements DaoTest{
     private Connection connection;
+    private static final Logger LOGGER = Logger.getLogger(DaoTestImpl.class);
 
     public DaoTestImpl(Connection connection){
         this.connection = connection;
@@ -42,11 +45,11 @@ public class DaoTestImpl  implements DaoTest{
 
 
     public void clearTable(){
-        final String CLEAR_QUERY = "delete from test";
+        final String CLEAR_QUERY = "delete from tes1t";
         try(Statement statement = connection.createStatement()){
             statement.execute(CLEAR_QUERY);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.info("Error CLEAR_QUERY");
         }
     }
 

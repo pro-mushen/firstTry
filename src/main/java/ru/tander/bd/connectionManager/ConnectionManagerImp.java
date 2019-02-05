@@ -6,41 +6,43 @@ import java.sql.SQLException;
 
 public class ConnectionManagerImp implements ConnectionManager {
     private static ConnectionManager connectionManager;
-    private String user;
-    private String password;
-    private String url;
+    private static String user;
+    private static String password;
+    private static String url;
     private Connection connection;
 
-    public static synchronized ConnectionManager getInstance() {
+    public static ConnectionManager getInstance(String urlBd, String userBd, String passwordBd) {
         if (connectionManager==null){
             connectionManager = new ConnectionManagerImp();
+            user = userBd;
+            password = passwordBd;
+            url = urlBd;
         }
         return connectionManager;
     }
 
     @Override
-    public synchronized Connection getConnection(String user, String password, String url) {
+    public Connection getConnection() {
         if (connection==null){
-            connection = getNewConnection(user,password,url);
+            connection = getNewConnection();
         }
         return connection;
     }
 
-//Double Checked Locking & volatile
-    private Connection getNewConnection(String user, String password, String url){
+    private Connection getNewConnection() {
         try {
-            connection = DriverManager.getConnection(url ,user,password);
+            connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return connection;
     }
 
-    void close(){
+    @Override
+    public void close() {
         if (connection != null){
             try {
                 connection.close();
-
             } catch (SQLException e) {
             }
         }
