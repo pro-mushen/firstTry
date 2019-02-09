@@ -17,7 +17,6 @@ public class ParsingXmlImpTest {
     private static final String XSL = "test.xsl";
     private static final String[] FIELDS = {"1,2"};
     private static final ParsingXml parsingXml = new ParsingXmlImp();
-    ;
 
     @Test
     public void createXmlFile() {

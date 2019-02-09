@@ -2,6 +2,7 @@ package ru.tander.bd.dao;
 
 
 import org.apache.log4j.Logger;
+import ru.tander.config.Config;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import static java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE;
 public class TestDaoImp implements TestDao {
     private static final Logger LOGGER = Logger.getLogger(TestDaoImp.class);
     private static final String TABLE_NAME = "test";
-    private static final int COUNT_QUERY_ONE_BATCH = 10;
     private Connection connection;
 
     public TestDaoImp(Connection connection) {
@@ -21,6 +21,7 @@ public class TestDaoImp implements TestDao {
 
     @Override
     public int addNumbers(int n) {
+        final int MAX_QUERY_ONE_BATCH = Integer.parseInt(Config.getProperty(Config.MAX_QUERY_ONE_BATCH_DB));
         final String INSERT_QUERY = "insert into " + TABLE_NAME + " values (?)";
         int countAddRecord = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY)) {
@@ -28,7 +29,7 @@ public class TestDaoImp implements TestDao {
             for (int i = 1; i <= n; i++) {
                 preparedStatement.setInt(1, i);
                 preparedStatement.addBatch();
-                if (i % COUNT_QUERY_ONE_BATCH == 0 || i == n) {
+                if (i % MAX_QUERY_ONE_BATCH == 0 || i == n) {
                     countAddRecord = countAddRecord + Arrays.stream(preparedStatement.executeBatch()).sum();
                 }
             }
