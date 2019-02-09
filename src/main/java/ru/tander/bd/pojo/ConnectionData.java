@@ -1,4 +1,4 @@
-package ru.tander.bd.Pojo;
+package ru.tander.bd.pojo;
 
 import java.util.Objects;
 

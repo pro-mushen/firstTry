@@ -11,6 +11,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ParsingXmlImp implements ParsingXml {
 
@@ -85,9 +87,11 @@ public class ParsingXmlImp implements ParsingXml {
     @Override
     public void delFile(String pathFile) {
         if (pathFile != null) {
-            File file = new File(pathFile);
-            if (file.delete()) {
+            try {
+                Files.delete(Paths.get(pathFile));
                 LOGGER.info("File " + pathFile + " deleted");
+            } catch (IOException e) {
+                LOGGER.error(e);
             }
         }
     }

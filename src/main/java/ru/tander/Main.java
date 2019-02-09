@@ -1,10 +1,10 @@
 package ru.tander;
 
-import ru.tander.bd.Pojo.ConnectionData;
 import ru.tander.bd.connectionManager.ConnectionManager;
 import ru.tander.bd.connectionManager.ConnectionManagerImp;
 import ru.tander.bd.dao.TestDao;
 import ru.tander.bd.dao.TestDaoImp;
+import ru.tander.bd.pojo.ConnectionData;
 import ru.tander.xml.ParsingXml;
 import ru.tander.xml.ParsingXmlImp;
 
@@ -37,8 +37,7 @@ public class Main {
         TestDao testDao = new TestDaoImp(connection);
         testDao.clearTable();
         testDao.addNumbers(N);
-        String[] records = testDao.selectAll();
-        return records;
+        return testDao.selectAll();
     }
 
 }

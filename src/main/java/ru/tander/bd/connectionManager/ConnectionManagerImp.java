@@ -1,7 +1,7 @@
 package ru.tander.bd.connectionManager;
 
 import org.apache.log4j.Logger;
-import ru.tander.bd.Pojo.ConnectionData;
+import ru.tander.bd.pojo.ConnectionData;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
