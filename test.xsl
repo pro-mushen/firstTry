@@ -3,7 +3,7 @@
                 version="1.0"
                 exclude-result-prefixes="xalan">
 
-    <xsl:output method="xml" indent="yes" xalan:indent-amount="4" encoding="UTF-8"/>
+    <xsl:output method="xml" indent="yes" encoding="UTF-8" xalan:indent-amount="4"/>
 
     <xsl:template match="/entries">
         <xsl:text>&#xA;</xsl:text>

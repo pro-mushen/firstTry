@@ -1,22 +1,22 @@
 package ru.tander.bd.connectionManager;
 
+import org.apache.log4j.Logger;
+import ru.tander.bd.Pojo.ConnectionData;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManagerImp implements ConnectionManager {
     private static ConnectionManager connectionManager;
-    private static String user;
-    private static String password;
-    private static String url;
+    private static final Logger LOGGER = Logger.getLogger(ConnectionManagerImp.class);
     private Connection connection;
+    private static ConnectionData connectionData;
 
-    public static ConnectionManager getInstance(String urlBd, String userBd, String passwordBd) {
+    public static ConnectionManager getInstance(ConnectionData connectionInfo) {
         if (connectionManager==null){
             connectionManager = new ConnectionManagerImp();
-            user = userBd;
-            password = passwordBd;
-            url = urlBd;
+            connectionData = connectionInfo;
         }
         return connectionManager;
     }
@@ -31,42 +31,33 @@ public class ConnectionManagerImp implements ConnectionManager {
 
     private Connection getNewConnection() {
         try {
-            connection = DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(connectionData.getUrl(), connectionData.getUser(), connectionData.getPassword());
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return connection;
     }
+
 
     @Override
     public void close() {
         if (connection != null){
             try {
                 connection.close();
+                LOGGER.info("Connection is closed");
             } catch (SQLException e) {
+                LOGGER.error(e);
             }
         }
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUrl() {
-        return url;
+    public ConnectionData getConnectionData() {
+        return connectionData;
     }
 
     @Override
     public String toString() {
-        return "ConnectionManagerImp{" +
-                "user='" + user + '\'' +
-                ", password='" + password + '\'' +
-                ", url='" + url +
-                '}';
+        return connectionData.toString();
     }
 
 }

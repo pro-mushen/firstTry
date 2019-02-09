@@ -1,38 +1,44 @@
 package ru.tander;
 
+import ru.tander.bd.Pojo.ConnectionData;
+import ru.tander.bd.connectionManager.ConnectionManager;
 import ru.tander.bd.connectionManager.ConnectionManagerImp;
-import ru.tander.bd.dao.DaoTest;
-import ru.tander.bd.dao.DaoTestImpl;
-import ru.tander.logic.services.ParsingXml;
-import ru.tander.logic.services.ParsingXmlImp;
+import ru.tander.bd.dao.TestDao;
+import ru.tander.bd.dao.TestDaoImp;
+import ru.tander.xml.ParsingXml;
+import ru.tander.xml.ParsingXmlImp;
+
+import java.sql.Connection;
 
 
 public class Main {
 
+    private static final int N = 20;
     private static final String USER = "postgres";
     private static final String PASSWORD = "admin";
     private static final String URL = "jdbc:postgresql://localhost:5500/test";
+    private static final String XML_ORIGINAL = "1.xml";
+    private static final String XML_TRANSFORMED = "2.xml";
+    private static final String XSL = "test.xsl";
+    private static ConnectionManager connectionManager;
 
-    public static void main(String[] args) {
-        DaoTest daoTest = new DaoTestImpl(ConnectionManagerImp.getInstance(URL, USER, PASSWORD).getConnection());
-        ((DaoTestImpl) daoTest).clearTable();
-        ((DaoTestImpl) daoTest).clearTable();
-        long startTime = System.currentTimeMillis();
-        ((DaoTestImpl) daoTest).addNumbersBatch(100);
-        System.out.println("Добавление: " + (System.currentTimeMillis() - startTime));
-        startTime = System.currentTimeMillis();
-        String[] rows = ((DaoTestImpl) daoTest).selectAll();
-        System.out.println(rows.length);
-        System.out.println("Продолжительность работы: " + (System.currentTimeMillis() - startTime));
-        startTime = System.currentTimeMillis();
+    public static void main(String[] args) throws Exception {
+        ConnectionData connectionData = new ConnectionData(URL, USER, PASSWORD);
+        connectionManager = ConnectionManagerImp.getInstance(connectionData);
+        String[] records = clearingAndCreatingRecords();
         ParsingXml parsingXml = new ParsingXmlImp();
-        parsingXml.createXmlFile(rows);
-        try {
-            ((ParsingXmlImp) parsingXml).xmlToString("1.xml", "test.xsl");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Продолжительность работы парсинг: " + (System.currentTimeMillis() - startTime));
-        System.out.println("ВСЁ");
+        parsingXml.createXmlFile(records, XML_ORIGINAL);
+        parsingXml.transformXml(XML_ORIGINAL, XSL, XML_TRANSFORMED);
+        connectionManager.close();
     }
+
+    private static String[] clearingAndCreatingRecords() {
+        Connection connection = connectionManager.getConnection();
+        TestDao testDao = new TestDaoImp(connection);
+        testDao.clearTable();
+        testDao.addNumbers(N);
+        String[] records = testDao.selectAll();
+        return records;
+    }
+
 }
