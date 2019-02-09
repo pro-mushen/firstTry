@@ -37,7 +37,7 @@ public class ParsingXmlImp implements ParsingXml {
                 newRow(0, writer);
                 writer.writeEndDocument();
                 writer.flush();
-            } catch (IOException | XMLStreamException e) {
+            } catch (IOException | XMLStreamException | NullPointerException e) {
                 LOGGER.error(counter + " of " + countEntry + " records are recorded. ", e);
                 delFile(xmlPath);
             }
@@ -77,18 +77,17 @@ public class ParsingXmlImp implements ParsingXml {
             transformer.transform(xmlSource, new StreamResult(new File(xmlPathTransformed)));
         } catch (IOException | TransformerException e) {
             LOGGER.error(e);
-            delFile(xmlPathOriginal, xmlPathTransformed);
+            delFile(xmlPathOriginal);
         }
     }
 
 
-    private void delFile(String... files) {
-        for (String pathFile : files) {
-            if (pathFile != null) {
-                File file = new File(pathFile);
-                if (file.delete()) {
-                    LOGGER.info("File " + pathFile + " deleted");
-                }
+    @Override
+    public void delFile(String pathFile) {
+        if (pathFile != null) {
+            File file = new File(pathFile);
+            if (file.delete()) {
+                LOGGER.info("File " + pathFile + " deleted");
             }
         }
     }
