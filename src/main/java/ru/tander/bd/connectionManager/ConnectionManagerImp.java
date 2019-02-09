@@ -1,69 +1,63 @@
 package ru.tander.bd.connectionManager;
 
+import org.apache.log4j.Logger;
+import ru.tander.bd.pojo.ConnectionData;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManagerImp implements ConnectionManager {
     private static ConnectionManager connectionManager;
-    private String user;
-    private String password;
-    private String url;
+    private static final Logger LOGGER = Logger.getLogger(ConnectionManagerImp.class);
     private Connection connection;
+    private static ConnectionData connectionData;
 
-    public static synchronized ConnectionManager getInstance() {
+    public static ConnectionManager getInstance(ConnectionData connectionInfo) {
         if (connectionManager==null){
             connectionManager = new ConnectionManagerImp();
+            connectionData = connectionInfo;
         }
         return connectionManager;
     }
 
     @Override
-    public synchronized Connection getConnection(String user, String password, String url) {
+    public Connection getConnection() {
         if (connection==null){
-            connection = getNewConnection(user,password,url);
+            connection = getNewConnection();
         }
         return connection;
     }
 
-//Double Checked Locking & volatile
-    private Connection getNewConnection(String user, String password, String url){
+    private Connection getNewConnection() {
         try {
-            connection = DriverManager.getConnection(url ,user,password);
+            connection = DriverManager.getConnection(connectionData.getUrl(), connectionData.getUser(), connectionData.getPassword());
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return connection;
     }
 
-    void close(){
+
+    @Override
+    public void close() {
         if (connection != null){
             try {
                 connection.close();
+                LOGGER.info("Connection is closed");
             } catch (SQLException e) {
+                LOGGER.error(e);
             }
         }
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUrl() {
-        return url;
+    public ConnectionData getConnectionData() {
+        return connectionData;
     }
 
     @Override
     public String toString() {
-        return "ConnectionManagerImp{" +
-                "user='" + user + '\'' +
-                ", password='" + password + '\'' +
-                ", url='" + url +
-                '}';
+        return connectionData.toString();
     }
 
 }
