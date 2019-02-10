@@ -8,6 +8,12 @@ import ru.tander.xml.ParsingXml;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
+/**
+ * @author Мирзоян Мушег
+ * @version 1.0
+ * @see XmlServiceImp
+ */
+
 public class XmlServiceImp implements XmlService {
 
     private static final Logger LOGGER = Logger.getLogger(XmlServiceImp.class);
