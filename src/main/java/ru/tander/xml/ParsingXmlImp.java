@@ -1,7 +1,13 @@
 package ru.tander.xml;
 
 import org.apache.log4j.Logger;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -14,9 +20,21 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * Этот класс создаёт XML файл с помощью {@link XMLStreamWriter},
+ * а так же преобразовывает XML с помощью XSLT {@link Transformer#transform}.
+ * Считывает данные из XML и расчитывает сумму fields.
+ *
+ * @author Мирзоян Мушег
+ * @version 1.0
+ * @see ParsingXml
+ * @since 1.8
+ */
+
 public class ParsingXmlImp implements ParsingXml {
 
     private static final Logger LOGGER = Logger.getLogger(ParsingXmlImp.class);
+    private long sum;
 
     @Override
     public int createXmlFile(String[] fields, String xmlPath) {
@@ -83,12 +101,33 @@ public class ParsingXmlImp implements ParsingXml {
         }
     }
 
-
     @Override
-    public void delFile(String pathFile) {
+    public long sumFields(String pathFile) throws IOException, ParserConfigurationException, SAXException {
+
+        DefaultHandler handler = new DefaultHandler() {
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) {
+                String valueField = attributes.getValue("field");
+                if (valueField != null) {
+                    try {
+                        sum += Integer.parseInt(valueField);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error("Incorrect attribute value : '" + valueField + "'");
+                    }
+                }
+            }
+        };
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser parser = factory.newSAXParser();
+        parser.parse(new File(pathFile), handler);
+        return sum;
+    }
+
+    private void delFile(String pathFile) {
         if (pathFile != null) {
             try {
-                Files.delete(Paths.get(pathFile));
+                Files.deleteIfExists(Paths.get(pathFile));
                 LOGGER.info("File " + pathFile + " deleted");
             } catch (IOException e) {
                 LOGGER.error(e);

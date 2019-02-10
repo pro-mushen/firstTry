@@ -1,7 +1,7 @@
 package ru.tander.bd.connectionManager;
 
 import org.apache.log4j.Logger;
-import ru.tander.bd.pojo.ConnectionData;
+import ru.tander.config.Config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,12 +11,10 @@ public class ConnectionManagerImp implements ConnectionManager {
     private static ConnectionManager connectionManager;
     private static final Logger LOGGER = Logger.getLogger(ConnectionManagerImp.class);
     private Connection connection;
-    private static ConnectionData connectionData;
 
-    public static ConnectionManager getInstance(ConnectionData connectionInfo) {
+    public static ConnectionManager getInstance() {
         if (connectionManager==null){
             connectionManager = new ConnectionManagerImp();
-            connectionData = connectionInfo;
         }
         return connectionManager;
     }
@@ -31,13 +29,15 @@ public class ConnectionManagerImp implements ConnectionManager {
 
     private Connection getNewConnection() {
         try {
-            connection = DriverManager.getConnection(connectionData.getUrl(), connectionData.getUser(), connectionData.getPassword());
+            connection = DriverManager.getConnection(
+                    Config.getProperty(Config.URL_DB),
+                    Config.getProperty(Config.LOGIN_DB),
+                    Config.getProperty(Config.PASSWORD_DB));
         } catch (SQLException e) {
             LOGGER.error(e);
         }
         return connection;
     }
-
 
     @Override
     public void close() {
@@ -51,13 +51,5 @@ public class ConnectionManagerImp implements ConnectionManager {
         }
     }
 
-    public ConnectionData getConnectionData() {
-        return connectionData;
-    }
-
-    @Override
-    public String toString() {
-        return connectionData.toString();
-    }
 
 }
