@@ -15,7 +15,6 @@ public class Config {
     public static final String TRANSFORM_XML = "xml.transformXml";
     public static final String XSL = "xml.xsl";
 
-
     private static final String NAME_PROPERTIES_FILE = "allData.properties";
     private static final Logger LOGGER = Logger.getLogger(Config.class);
     private static Properties properties = new Properties();

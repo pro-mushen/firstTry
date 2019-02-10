@@ -11,15 +11,16 @@ import java.io.IOException;
 public class XmlServiceImp implements XmlService {
 
     private static final Logger LOGGER = Logger.getLogger(XmlServiceImp.class);
+    /**
+     * Даный класс предаставляет функционал для работы с XML
+     */
     private ParsingXml parsingXml;
+    /** Даный класс предаставляет необходимые данные для создания XML*/
     private InitData initData;
 
     public XmlServiceImp(ParsingXml parsingXml, InitData initData) {
         this.parsingXml = parsingXml;
         this.initData = initData;
-    }
-
-    public XmlServiceImp() {
     }
 
     @Override

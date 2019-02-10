@@ -20,6 +20,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * Этот класс создаёт XML файл с помощью {@link XMLStreamWriter},
+ * а так же преобразовывает XML с помощью XSLT {@link Transformer#transform}.
+ * Считывает данные из XML и расчитывает сумму fields.
+ *
+ * @author Мирзоян Мушег
+ * @version 1.0
+ * @see ParsingXml
+ * @since 1.8
+ */
+
 public class ParsingXmlImp implements ParsingXml {
 
     private static final Logger LOGGER = Logger.getLogger(ParsingXmlImp.class);
@@ -90,7 +101,6 @@ public class ParsingXmlImp implements ParsingXml {
         }
     }
 
-
     @Override
     public long sumFields(String pathFile) throws IOException, ParserConfigurationException, SAXException {
 
@@ -104,7 +114,6 @@ public class ParsingXmlImp implements ParsingXml {
                     } catch (NumberFormatException e) {
                         LOGGER.error("Incorrect attribute value : '" + valueField + "'");
                     }
-
                 }
             }
         };
@@ -115,11 +124,10 @@ public class ParsingXmlImp implements ParsingXml {
         return sum;
     }
 
-    @Override
-    public void delFile(String pathFile) {
+    private void delFile(String pathFile) {
         if (pathFile != null) {
             try {
-                Files.delete(Paths.get(pathFile));
+                Files.deleteIfExists(Paths.get(pathFile));
                 LOGGER.info("File " + pathFile + " deleted");
             } catch (IOException e) {
                 LOGGER.error(e);

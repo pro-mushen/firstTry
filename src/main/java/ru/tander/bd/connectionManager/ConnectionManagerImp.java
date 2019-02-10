@@ -39,7 +39,6 @@ public class ConnectionManagerImp implements ConnectionManager {
         return connection;
     }
 
-
     @Override
     public void close() {
         if (connection != null){

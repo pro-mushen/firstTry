@@ -10,6 +10,14 @@ import java.util.Arrays;
 import static java.sql.ResultSet.CONCUR_READ_ONLY;
 import static java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE;
 
+/**
+ * Класс работы с БД
+ *
+ * @author Мирзоян Мушег
+ * @version 1.0
+ * @see TestDao
+ * @since 1.8
+ */
 public class TestDaoImp implements TestDao {
     private static final Logger LOGGER = Logger.getLogger(TestDaoImp.class);
     private static final String TABLE_NAME = "test";
@@ -35,6 +43,7 @@ public class TestDaoImp implements TestDao {
             }
             connection.commit();
             connection.setAutoCommit(true);
+            LOGGER.info("Add records " + countAddRecord + " of " + n);
         } catch (SQLException e) {
             LOGGER.error("Error INSERT_QUERY. " + e);
             countAddRecord = 0;
